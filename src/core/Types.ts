@@ -1,4 +1,3 @@
-// Auth
 export interface DefaultAuthConfigParams {
   isLoggedIn: boolean;
   userRole: string;
@@ -12,7 +11,6 @@ export interface AuthProviderParams {
   state?: stateType;
 }
 
-// Navigation
 export interface PublicPathParams {
   key?: string | number;
   name: string;
@@ -54,25 +52,3 @@ export interface NavigationProviderParams extends NavigationConfigParams {
 export type publicReturnType = {
   [key: string]: { name: string; path: string; props: any; active: boolean };
 };
-
-// Theme
-type colorsType = {
-  backgroundColor: string;
-  primaryColor: string;
-  secondaryColor: string;
-  highlightColor: string;
-  textColor: string;
-  borderColor: string;
-  cardColor: string;
-};
-
-export interface DefaultThemeConfigParams {
-  dark: boolean;
-  colors: colorsType;
-}
-
-export interface ThemeProviderParams {
-  children: React.ReactNode;
-  theme: DefaultThemeConfigParams;
-  toggleTheme?: () => void;
-}

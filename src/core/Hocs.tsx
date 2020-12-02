@@ -11,12 +11,11 @@ import { PrivateRoute, PublicRoute } from "./Modules";
 import {
   AuthProviderParams,
   NavigationProviderParams,
-  ThemeProviderParams,
   NavigationConfigParams,
   PublicPathParams,
   PrivatePathParams,
 } from "./Types";
-import { AuthContext, NavigationContext, ThemeContext } from "./Context";
+import { AuthContext, NavigationContext } from "./Context";
 import { getParsedPaths, reOrderPaths } from "./Utils";
 
 // Auth
@@ -262,23 +261,6 @@ export const withNavigation = (
       </Navigation.Provider>
     );
   };
-};
-
-// Theme
-export const Theme = {
-  Provider: (props: ThemeProviderParams) => {
-    const { children, theme, toggleTheme } = props;
-
-    const contextValue = React.useMemo(() => theme, [theme]);
-    const toggleThemeFunction = React.useMemo(() => toggleTheme, [toggleTheme]);
-    const value = toggleThemeFunction
-      ? { ...contextValue, toggleTheme: toggleThemeFunction }
-      : { ...contextValue };
-
-    return (
-      <ThemeContext.Provider {...{ value }}>{children}</ThemeContext.Provider>
-    );
-  },
 };
 
 // NavLink Component as ActiveLink

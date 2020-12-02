@@ -6,7 +6,7 @@ import {
   matchPath,
 } from "react-router-dom";
 import { stateType, DefaultAuthConfigParams, publicReturnType } from "./Types";
-import { AuthContext, NavigationContext, ThemeContext } from "./Context";
+import { AuthContext, NavigationContext } from "./Context";
 import { getParsedUserRole, canUserAccess, getParsedPaths } from "./Utils";
 
 // Auth
@@ -118,8 +118,3 @@ export const useNavigation = () => {
     params,
   };
 };
-
-// Theme
-export function useTheme() {
-  return useContext(ThemeContext);
-}
