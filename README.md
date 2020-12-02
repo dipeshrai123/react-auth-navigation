@@ -139,7 +139,7 @@ export default withNavigation(App, {
 });
 ```
 
-And that's it. Its all you should do to define the routes and user-roles.
+And that's it. Its all you should do to define the routes and user-roles. 
 
 ## License
 
