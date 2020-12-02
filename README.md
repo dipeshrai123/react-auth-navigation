@@ -1,32 +1,102 @@
 # react-auth-navigation
 
-> React library for authenticated routes
+
+
+>  *React library for authenticated routes*
+
+
 
 [![NPM](https://shields.io/npm/v/react-auth-navigation.svg)](https://www.npmjs.com/package/react-auth-navigation) [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
+
+
 
 ## Install
 
 ```bash
+// with npm
 npm i react-auth-navigation
+
+// with yarn
+yarn add react-auth-navigation
 ```
+
+
+
+## Why is react-auth-navigation ?
+
+It is a react library built on top of **react-router-dom**. React Auth Navigation provides us to create an authenticated routes and manages all the complicated routing and authenticating the users in client-side.
+
+
 
 ## Usage
 
-#### Navigation
+### Navigation
 
-Navigation lets you define all the public, private and protected routes. Protected routes are types of public routes but are restricted which means it cannot be accessed after the user has logged into the web application. To use Navigation, wrap entire application with **<Navigation.Provider>** and provide _publicRoutes_, _privateRoutes_ and _userRoles_.
+Before we dive into creating authenticated routes, we should have some concept of **public**, **private** and **protected** routes.
+
+But, What exactly are public, private and protected routes ?
+
+- **Public Routes** are those routes which can be accessed with or without login.
+- **Private routes** are those routes which cannot be accessed without login.
+- **Protected routes** are those types of public routes which cannot be accessed if a user is logged in.
+
+Now Lets create authenticated routes.
+
+
+
+#### withNavigation()
+
+**withNavigation()** is responsible for managing all routes and userRoles. **withNavigation()** hoc should be exported from root component. It accepts **Component** as _first argument_ and **Configuration Object** as _second argument_.
+
+Let us configure the _second argument_.
+
+- **routerType** _( optional )_ : It can be either "hash" or "browser". Default "browser".
+
+- **publicPaths** accepts an array of object with following keys:
+
+  - **key** _( string ) ( optional )_ : Defines unique key for each navigation route.
+  - **name** _( string )_ : Defines the name for a path and used as a routes key for **useNavigation()** hook keys if key is not passed.
+  - **path** _( string )_ : Defines the path for a component.
+  - **component** _( Component )_ : Defines a component for a path.
+  - **restricted** _( boolean )_ : If **true** then it is **protected** route otherwise **public**.
+  - **subPaths** _( array ) ( optional )_ : Accepts array of object with same as **publicPaths** array. It is used to make sub routes _( full-page routing )_.
+  - **nestedPaths** _( array ) ( optional )_ : Accepts array of object with same as **publicPaths** array. It is used to make nested routes _( component routing )_.
+
+- **privatePaths** accepts an array of object with following keys:
+
+  - **key** _( string ) ( optional )_ : Defines unique key for each navigation route.
+  - **name** _( string )_ : Defines the name for a path and used as a routes key for **useNavigation()** hook keys if key is not passed.
+  - **path** _( string )_ : Defines the path for a component.
+  - **component** _( Component )_ : Defines a component for a path.
+  - **subPaths** _( array ) ( optional )_ : Accepts array of object with same as **publicPaths** array. It is used to make sub routes _( full-page routing )_.
+  - **nestedPaths** _( array ) ( optional )_ : Accepts array of object with same as **publicPaths** array. It is used to make nested routes _( component routing )_.
+
+- **userRoles** is used to define the access routes for a particular user roles. accepts an object with following format:
+
+  ```typescript
+  ...
+  userRoles: {
+      ...
+      [userRole: string] : { access: Array<string> }
+  }
+  ```
+
+
 
 **Example**
 
-```jsx
-import React from "react";
-import { Navigation } from "react-uicomp";
-import { Page1, Page2 } from "./Pages";
+Basic example of routing. 
 
-// Array of object having key, name, path, component and restricted.
-const publicPaths = [
+First create **publicPaths**, **privatePaths** and **userRoles**.
+
+```javascript
+// routes.js
+
+import Page1 from "./Pages/Page1";
+import Page2 from "./Pages/Page2";
+
+export const publicPaths = [
   {
-    key: "Public",
     name: "Public",
     path: "/public",
     component: Page1,
@@ -34,180 +104,43 @@ const publicPaths = [
   },
 ];
 
-// Array of object having key, name, path and component.
-const privatePaths = [
+export const privatePaths = [
   {
-    key: "Private",
     name: "Private",
     path: "/private",
     component: Page2,
   },
 ];
 
-// Define user role and provide access routes.
-const userRoles = {
-  user: { access: ["/public"] },
-  admin: { access: ["/public", "/private"] },
+export const userRoles = { 
+    user: { access: ["/public"] }, 
+    admin:  { access: ["*"] }, // '*' defines to give access to all paths.
 };
+```
+
+Now lets use this with **withNavigation()** hoc.
+
+```javascript
+// app.js
+import React from "react";
+import { withNavigation } from "react-auth-navigation";
+import { publicRoutes, privateRoutes, userRoles } from "./routes";
 
 const App = () => {
   return (
-    <Navigation.Provider
-      publicPaths={publicPaths}
-      privatePaths={privatePaths}
-      userRoles={userRoles}
-    >
-      // ...
-    </Navigation.Provider>
+    // ...
   );
 };
 
-export default App;
+export default withNavigation(App, {
+  publicPaths,
+  privatePaths,
+  userRoles,
+});
 ```
 
-It has **useNavigation()** hook which returns an object with **navigation**, **history**, **location**, **params** as its properties. **navigation** is an object of two keys **routes** object and **navigate** method. **navigate** method is similar to **_history.push()_** which will take take string path and navigates to given path.
+And that's it. Its all you should do to define the routes and user-roles.
 
-#### Auth
+## License
 
-Auth lets you authenticate if a user is logged in or not. It has **<Auth.Provider>** where you define the _config_ prop object with _isLoggedIn_ and _userRole_. It also has state prop where you can pass any object which will be available in entire application. And to render all the pages you have set up, use **<Auth.Screens />** inside <Auth.Provider>.
-
-**Example**
-
-```jsx
-// import Auth from here
-import { Navigation, Auth } from "react-uicomp";
-
-...
-
-const App = () => {
-  const [config, setConfig] = useState({ isLoggedIn: false, userRole: "user" });
-
-  return (
-    <Navigation.Provider
-      publicPaths={publicPaths}
-      privatePaths={privatePaths}
-      userRoles={userRoles}
-    >
-      <Auth.Provider
-        config={config}
-        state={{
-          logout: () => {
-            setConfig({ isLoggedIn: false, userRole: "user" });
-          }
-        }}
-      >
-        <Auth.Screens />
-      </Auth.Provider>
-    </Navigation.Provider>
-  );
-};
-```
-
-It has **useAuth()** hook which lets you access state object from any component from entire application.
-
-**Example**
-
-```jsx
-// import useAuth
-import { useAuth } from "react-uicomp";
-
-export default function() {
-
-    // logout function is available on state prop in <Auth.Provider>
-    const { logout } = useAuth();
-
-    return () {
-        // ...
-    }
-}
-```
-
-#### Theme
-
-Theming is very essential to every app nowadays. So, we provided theming control in this package. Lets say, if you want to create dark mode and light mode in application. So, lets define both dark and light mode objects.
-
-**Example**
-
-```jsx
-// Dark theme object variable
-const darkTheme = {
-  dark: true,
-  // colors cannot have other keys except these...
-  colors: {
-    backgroundColor: "#1F1B24",
-    primaryColor: "#1A6AA7",
-    secondaryColor: "#989898",
-    highlightColor: "#FA0404",
-    textColor: "#FFFFFF",
-    borderColor: "#353535",
-    cardColor: "#383838",
-  },
-};
-
-// Light theme object variable
-const lightTheme = {
-  dark: false,
-  colors: {
-    backgroundColor: "#F8F8F8",
-    primaryColor: "#2196F3",
-    secondaryColor: "#989898",
-    highlightColor: "#EB4034",
-    textColor: "#353535",
-    borderColor: "#E1E1E1",
-    cardColor: "#FFFFFF",
-  },
-};
-```
-
-Okay now we have set themes for dark and light mode. Lets use it with **<Theme.Provider>** component which has _theme_ prop object and _toggleTheme_ prop function. Both _theme_ prop and _toggleTheme_ function is available for entire application.
-
-**Example**
-
-```jsx
-// import Theme from here
-import { Navigation, Auth, Theme } from "react-uicomp";
-
-...
-
-const App = () => {
-    const [ activeTheme, setActiveTheme ] = useState("light");
-
-    const theme = activeTheme === "light" ? lightTheme : darkTheme;
-
-    const toggleTheme = () => {
-        setActiveTheme(prev => prev === "light" ? darkTheme : lightTheme);
-    }
-
-    return (
-    	<Navigation.Provider>
-        	<Theme.Provider theme={theme} toggleTheme={toggleTheme}>
-            	<Auth.Provider>
-                	<Auth.Screens />
-                </Auth.Provider>
-            </Theme.Provider>
-        </Navigation.Provider>
-    )
-};
-```
-
-Both _theme_ and _toggleTheme_ can be accessed with **useTheme()** hook.
-
-**Example**
-
-```jsx
-// import useTheme
-import { useTheme } from "react-uicomp";
-
-export default function() {
-
-    // It has theme object and toggleTheme function
-    const { colors, toggleTheme } = useTheme();
-
-    return () {
-        {/* use it like this which is changed automatically when toggleTheme function is called */}
-        <div style={{ color: colors.primaryColor }}>
-        	Paragraph Text
-        </div>
-    }
-}
-```
+MIT © [dipeshrai123](https://github.com/dipeshrai123)
