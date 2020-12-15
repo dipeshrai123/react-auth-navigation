@@ -2,7 +2,7 @@
 
 
 
->  *React library for authenticated routes*
+> React library for authenticated routes
 
 
 
