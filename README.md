@@ -1,7 +1,4 @@
 # react-auth-navigation
-
-
-
 > React library for authenticated routes
 
 
