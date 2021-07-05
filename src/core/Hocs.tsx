@@ -6,7 +6,9 @@ import {
   Route,
   NavLink as InternalNavLink,
   NavLinkProps as InternalNavLinkProps,
+  useLocation,
 } from "react-router-dom";
+import { SpringCore } from "react-ui-animate";
 import { PrivateRoute, PublicRoute } from "./Modules";
 import {
   AuthProviderParams,
@@ -17,6 +19,35 @@ import {
 } from "./Types";
 import { AuthContext, NavigationContext } from "./Context";
 import { getParsedPaths, reOrderPaths } from "./Utils";
+
+const { animated, useTransition } = SpringCore;
+
+interface RouterAnimationWrapperProps {
+  children?: any;
+  animationEnabled?: boolean;
+}
+
+// Animation wrapper for routes
+const RouterAnimationWrapper = ({
+  children,
+  animationEnabled = false,
+}: RouterAnimationWrapperProps) => {
+  const location = useLocation();
+
+  const transitions = useTransition(location, {
+    from: { opacity: 0 },
+    enter: { opacity: 1 },
+    leave: { opacity: 0 },
+  });
+
+  if (animationEnabled) {
+    return transitions((props, item) => (
+      <animated.div style={props}>{children(item)}</animated.div>
+    ));
+  } else {
+    return children(location);
+  }
+};
 
 /**
  * Higher Order Component which wraps overall component tree
@@ -40,11 +71,15 @@ export const Auth = {
       </AuthContext.Provider>
     );
   },
-  Screens: ({ path }: { path?: string }) => {
-    const {
-      publicPaths: PUBLIC_PATHS,
-      privatePaths: PRIVATE_PATHS,
-    } = React.useContext(NavigationContext);
+  Screens: ({
+    path,
+    animationEnabled,
+  }: {
+    path?: string;
+    animationEnabled?: boolean;
+  }) => {
+    const { publicPaths: PUBLIC_PATHS, privatePaths: PRIVATE_PATHS } =
+      React.useContext(NavigationContext);
 
     if (!!path) {
       const parser = getParsedPaths("nestedPaths");
@@ -67,147 +102,160 @@ export const Auth = {
       );
 
       return (
-        <Switch>
-          {
-            // PUBLIC ROUTES
-            filteredNestedPublicRoutes.length &&
-              filteredNestedPublicRoutes
-                .filter(({ path }: PublicPathParams) => path !== null) // Other than Not Found Page
-                .map(
-                  (
-                    {
-                      path,
-                      component,
-                      restricted,
-                      exact = true,
-                      nestedPaths,
-                    }: PublicPathParams,
-                    index: number
-                  ) => {
-                    let _exact = exact;
-                    if (!!nestedPaths) {
-                      _exact = false;
+        <RouterAnimationWrapper {...{ animationEnabled }}>
+          {(item: any) => (
+            <Switch location={item}>
+              {
+                // PUBLIC ROUTES
+                filteredNestedPublicRoutes.length &&
+                  filteredNestedPublicRoutes
+                    .filter(({ path }: PublicPathParams) => path !== null) // Other than Not Found Page
+                    .map(
+                      (
+                        {
+                          path,
+                          component,
+                          restricted,
+                          exact = true,
+                          nestedPaths,
+                        }: PublicPathParams,
+                        index: number
+                      ) => {
+                        let _exact = exact;
+                        if (!!nestedPaths) {
+                          _exact = false;
+                        }
+
+                        return (
+                          <PublicRoute
+                            key={index}
+                            path={path}
+                            component={component}
+                            restricted={!!restricted}
+                            exact={_exact}
+                          />
+                        );
+                      }
+                    )
+              }
+              {
+                // PRIVATE ROUTES
+                filteredNestedPrivateRoutes.length &&
+                  filteredNestedPrivateRoutes.map(
+                    (
+                      {
+                        path,
+                        component,
+                        exact = true,
+                        nestedPaths,
+                      }: PrivatePathParams,
+                      index: number
+                    ) => {
+                      let _exact = exact;
+                      if (!!nestedPaths) {
+                        _exact = false;
+                      }
+
+                      return (
+                        <PrivateRoute
+                          key={index}
+                          path={path}
+                          component={component}
+                          exact={_exact}
+                        />
+                      );
                     }
-
-                    return (
-                      <PublicRoute
-                        key={index}
-                        path={path}
-                        component={component}
-                        restricted={!!restricted}
-                        exact={_exact}
-                      />
-                    );
-                  }
-                )
-          }
-          {
-            // PRIVATE ROUTES
-            filteredNestedPrivateRoutes.length &&
-              filteredNestedPrivateRoutes.map(
-                (
-                  {
-                    path,
-                    component,
-                    exact = true,
-                    nestedPaths,
-                  }: PrivatePathParams,
-                  index: number
-                ) => {
-                  let _exact = exact;
-                  if (!!nestedPaths) {
-                    _exact = false;
-                  }
-
-                  return (
-                    <PrivateRoute
-                      key={index}
-                      path={path}
-                      component={component}
-                      exact={_exact}
-                    />
-                  );
-                }
-              )
-          }
-        </Switch>
+                  )
+              }
+            </Switch>
+          )}
+        </RouterAnimationWrapper>
       );
     } else {
       return (
-        <Switch>
-          {
-            // PUBLIC ROUTES
-            PUBLIC_PATHS.length &&
-              PUBLIC_PATHS.filter(({ path }: PublicPathParams) => path !== null) // Other than Not Found Page
-                .map(
-                  (
-                    {
-                      path,
-                      component,
-                      restricted,
-                      exact = true,
-                      nestedPaths,
-                    }: PublicPathParams,
-                    index: number
-                  ) => {
-                    let _exact = exact;
-                    if (!!nestedPaths) {
-                      _exact = false;
+        <RouterAnimationWrapper {...{ animationEnabled }}>
+          {(item: any) => (
+            <Switch location={item}>
+              {
+                // PUBLIC ROUTES
+                PUBLIC_PATHS.length &&
+                  PUBLIC_PATHS.filter(
+                    ({ path }: PublicPathParams) => path !== null
+                  ) // Other than Not Found Page
+                    .map(
+                      (
+                        {
+                          path,
+                          component,
+                          restricted,
+                          exact = true,
+                          nestedPaths,
+                        }: PublicPathParams,
+                        index: number
+                      ) => {
+                        let _exact = exact;
+                        if (!!nestedPaths) {
+                          _exact = false;
+                        }
+                        return (
+                          <PublicRoute
+                            key={index}
+                            path={path}
+                            component={component}
+                            restricted={!!restricted}
+                            exact={_exact}
+                          />
+                        );
+                      }
+                    )
+              }
+              {
+                // PRIVATE ROUTES
+                PRIVATE_PATHS.length &&
+                  PRIVATE_PATHS.map(
+                    (
+                      {
+                        path,
+                        component,
+                        exact = true,
+                        nestedPaths,
+                      }: PrivatePathParams,
+                      index: number
+                    ) => {
+                      let _exact = exact;
+                      if (!!nestedPaths) {
+                        _exact = false;
+                      }
+                      return (
+                        <PrivateRoute
+                          key={index}
+                          path={path}
+                          component={component}
+                          exact={_exact}
+                        />
+                      );
                     }
-                    return (
-                      <PublicRoute
-                        key={index}
-                        path={path}
-                        component={component}
-                        restricted={!!restricted}
-                        exact={_exact}
-                      />
-                    );
-                  }
-                )
-          }
-          {
-            // PRIVATE ROUTES
-            PRIVATE_PATHS.length &&
-              PRIVATE_PATHS.map(
-                (
-                  {
-                    path,
-                    component,
-                    exact = true,
-                    nestedPaths,
-                  }: PrivatePathParams,
-                  index: number
-                ) => {
-                  let _exact = exact;
-                  if (!!nestedPaths) {
-                    _exact = false;
-                  }
-                  return (
-                    <PrivateRoute
-                      key={index}
-                      path={path}
-                      component={component}
-                      exact={_exact}
-                    />
-                  );
-                }
-              )
-          }
-
-          {
-            // NOT FOUND
-            PUBLIC_PATHS.length &&
-              PUBLIC_PATHS.filter(
-                ({ path }: PublicPathParams) => path === null
-              ).map(
-                ({ component: Component }: PublicPathParams, index: number) =>
-                  index === 0 && (
-                    <Route key={index} render={() => <Component />} />
                   )
-              )
-          }
-        </Switch>
+              }
+
+              {
+                // NOT FOUND
+                PUBLIC_PATHS.length &&
+                  PUBLIC_PATHS.filter(
+                    ({ path }: PublicPathParams) => path === null
+                  ).map(
+                    (
+                      { component: Component }: PublicPathParams,
+                      index: number
+                    ) =>
+                      index === 0 && (
+                        <Route key={index} render={() => <Component />} />
+                      )
+                  )
+              }
+            </Switch>
+          )}
+        </RouterAnimationWrapper>
       );
     }
   },
@@ -222,13 +270,8 @@ export const Auth = {
  */
 export const Navigation = {
   Provider: (props: NavigationProviderParams) => {
-    const {
-      children,
-      privatePaths,
-      publicPaths,
-      userRoles,
-      routerType,
-    } = props;
+    const { children, privatePaths, publicPaths, userRoles, routerType } =
+      props;
 
     const parser = getParsedPaths("subPaths");
 
