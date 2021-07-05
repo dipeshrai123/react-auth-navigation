@@ -18,7 +18,14 @@ import {
 import { AuthContext, NavigationContext } from "./Context";
 import { getParsedPaths, reOrderPaths } from "./Utils";
 
-// Auth
+/**
+ * Higher Order Component which wraps overall component tree
+ * Auth.Provider
+ * @state prop accepts anything and acts as a context for overall app, can be accessed with useAuth() hook
+ * @config prop accepts an object with isLoggedIn and userRole keys, can be accessed with useAuth() hook
+ * Auth.Screens
+ * @path prop accepts a string or null, null represents "/" while any other string path for nested navigation
+ */
 export const Auth = {
   Provider: (props: AuthProviderParams) => {
     const { children, config, state } = props;
@@ -206,7 +213,13 @@ export const Auth = {
   },
 };
 
-// Navigation
+/**
+ * Higher Order Component to define private, public and protected routes for different user roles.
+ * @publicPaths prop accepts an array with key, name, path, component, restricted, subPaths, nestedPaths and props.
+ * @privatePaths prop accepts an array with key, name, path, component, subPaths, nestedPaths and props.
+ * @userRoles prop an object with any number of user role key with its access end points path.
+ * @routerType prop either "hash" or "browser"
+ */
 export const Navigation = {
   Provider: (props: NavigationProviderParams) => {
     const {
@@ -242,6 +255,11 @@ export const Navigation = {
   },
 };
 
+/**
+ * Functional Higher Order Component which is alternative to Navigation HOC.
+ * @param Component Top level component of entire component tree.
+ * @param navigationConfig Object with publicPaths, privatePaths, userRoles and routerType
+ */
 export const withNavigation = (
   Component: React.ComponentType,
   navigationConfig: NavigationConfigParams

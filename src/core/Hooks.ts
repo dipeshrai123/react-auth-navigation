@@ -9,12 +9,18 @@ import { stateType, DefaultAuthConfigParams, publicReturnType } from "./Types";
 import { AuthContext, NavigationContext } from "./Context";
 import { getParsedUserRole, canUserAccess, getParsedPaths } from "./Utils";
 
-// Auth
+/**
+ * Hook which provides all the authentication properties
+ * @returns an object with config and state props passed to Auth.Provider HOC. 
+ */
 export const useAuth = () => {
   return useContext(AuthContext) as DefaultAuthConfigParams & stateType;
 };
 
-// Navigation
+/**
+ * Hook for getting all navigation properties, methods and routes
+ * @returns Object with navigation, history, location and params
+ */
 export const useNavigation = () => {
   const history = useHistory();
   const location = useLocation();
@@ -119,6 +125,11 @@ export const useNavigation = () => {
   };
 };
 
+/**
+ * Get query params for current url location
+ * @param queryStr Query params string can be pass which overrides the current location query
+ * @returns Object with key value pair
+ */
 export const useQuery = (queryStr = null) => {
   const { location } = useNavigation();
   const queryParams = new URLSearchParams(queryStr ?? location.search);
