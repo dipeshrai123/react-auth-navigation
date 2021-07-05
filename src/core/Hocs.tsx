@@ -25,29 +25,58 @@ const { animated, useTransition } = SpringCore;
 interface RouterAnimationWrapperProps {
   children?: any;
   animationEnabled?: boolean;
+  animationConfig?: {
+    interpolation?: [any, any, any];
+  };
 }
 
 // Animation wrapper for routes
 const RouterAnimationWrapper = ({
   children,
   animationEnabled = false,
+  animationConfig,
 }: RouterAnimationWrapperProps) => {
   const location = useLocation();
 
+  let from = { opacity: 0 };
+  let enter = { opacity: 1 };
+  let leave = { opacity: 0 };
+
+  const interpolation = animationConfig?.interpolation;
+  if (interpolation) {
+    from = interpolation[0];
+    enter = interpolation[1];
+    leave = interpolation[2];
+  }
+
   const transitions = useTransition(location, {
-    from: { opacity: 0 },
-    enter: { opacity: 1 },
-    leave: { opacity: 0 },
+    from,
+    enter,
+    leave,
   });
 
   if (animationEnabled) {
     return transitions((props, item) => (
-      <animated.div style={props}>{children(item)}</animated.div>
+      <animated.div
+        style={{
+          ...props,
+          position: "absolute",
+          left: 0,
+          top: 0,
+          width: "100%",
+        }}
+      >
+        {children(item)}
+      </animated.div>
     ));
   } else {
     return children(location);
   }
 };
+
+interface AnimationConfig {
+  interpolation?: [any, any, any];
+}
 
 /**
  * Higher Order Component which wraps overall component tree
@@ -74,9 +103,11 @@ export const Auth = {
   Screens: ({
     path,
     animationEnabled,
+    animationConfig,
   }: {
     path?: string;
     animationEnabled?: boolean;
+    animationConfig?: AnimationConfig;
   }) => {
     const { publicPaths: PUBLIC_PATHS, privatePaths: PRIVATE_PATHS } =
       React.useContext(NavigationContext);
@@ -102,7 +133,7 @@ export const Auth = {
       );
 
       return (
-        <RouterAnimationWrapper {...{ animationEnabled }}>
+        <RouterAnimationWrapper {...{ animationEnabled, animationConfig }}>
           {(item: any) => (
             <Switch location={item}>
               {
@@ -173,7 +204,7 @@ export const Auth = {
       );
     } else {
       return (
-        <RouterAnimationWrapper {...{ animationEnabled }}>
+        <RouterAnimationWrapper {...{ animationEnabled, animationConfig }}>
           {(item: any) => (
             <Switch location={item}>
               {

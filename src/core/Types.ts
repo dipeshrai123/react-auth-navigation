@@ -15,7 +15,7 @@ export interface PublicPathParams {
   key?: string | number;
   name: string;
   path: string;
-  component: React.ComponentType;
+  component: React.ComponentType<any>;
   exact?: boolean;
   visible?: boolean;
   restricted: boolean;
@@ -28,7 +28,7 @@ export interface PrivatePathParams {
   key?: string | number;
   name: string;
   path: string;
-  component: React.ComponentType;
+  component: React.ComponentType<any>;
   exact?: boolean;
   visible?: boolean;
   subPaths?: PrivatePathParams[];
