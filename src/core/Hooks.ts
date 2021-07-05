@@ -118,3 +118,15 @@ export const useNavigation = () => {
     params,
   };
 };
+
+export const useQuery = (queryStr = null) => {
+  const { location } = useNavigation();
+  const queryParams = new URLSearchParams(queryStr ?? location.search);
+
+  const resultObject = {};
+  for (let [key, value] of queryParams.entries()) {
+    resultObject[key] = value;
+  }
+
+  return resultObject;
+};
