@@ -6,7 +6,9 @@ import {
   Route,
   NavLink as InternalNavLink,
   NavLinkProps as InternalNavLinkProps,
+  useLocation,
 } from "react-router-dom";
+import { SpringCore } from "react-ui-animate";
 import { PrivateRoute, PublicRoute } from "./Modules";
 import {
   AuthProviderParams,
@@ -18,6 +20,126 @@ import {
 import { AuthContext, NavigationContext } from "./Context";
 import { getParsedPaths, reOrderPaths } from "./Utils";
 
+const { animated, useTransition } = SpringCore;
+
+// check undefined or null
+const isDefined = (value: any): boolean => {
+  return value !== undefined && value !== null;
+};
+
+type InitialConfigType = "ease" | "elastic" | "stiff" | "wooble" | undefined;
+
+interface AnimationConfig {
+  interpolation?: [any, any, any];
+  animationType?: InitialConfigType;
+  duration?: number;
+  velocity?: number;
+  mass?: number;
+  friction?: number;
+  tension?: number;
+  easing?: (t: number) => number;
+  delay?: number;
+}
+
+interface RouterAnimationWrapperProps {
+  children?: any;
+  animationEnabled?: boolean;
+  animationConfig?: AnimationConfig;
+}
+
+const getInitialConfig = (
+  animationType: InitialConfigType
+): {
+  mass: number;
+  friction: number;
+  tension: number;
+} => {
+  switch (animationType) {
+    case "elastic":
+      return { mass: 1, friction: 18, tension: 250 };
+
+    case "stiff":
+      return { mass: 1, friction: 18, tension: 350 };
+
+    case "wooble":
+      return { mass: 1, friction: 8, tension: 250 };
+
+    case "ease":
+    default:
+      return { mass: 1, friction: 26, tension: 170 };
+  }
+};
+
+// Animation wrapper for routes
+const RouterAnimationWrapper = ({
+  children,
+  animationEnabled = false,
+  animationConfig,
+}: RouterAnimationWrapperProps) => {
+  const location = useLocation();
+
+  const animationType = animationConfig?.animationType ?? "ease"; // Defines default animation
+  const duration = animationConfig?.duration;
+  const velocity = animationConfig?.velocity;
+  const mass = animationConfig?.mass;
+  const friction = animationConfig?.friction;
+  const tension = animationConfig?.tension;
+  const easing = animationConfig?.easing ?? ((t: number) => t);
+  const delay = animationConfig?.delay ?? 0;
+
+  const initialConfig = getInitialConfig(animationType);
+  const restConfig: AnimationConfig = {};
+
+  if (isDefined(duration)) restConfig.duration = duration;
+  if (isDefined(velocity)) restConfig.velocity = velocity;
+  if (isDefined(mass)) restConfig.mass = mass;
+  if (isDefined(friction)) restConfig.friction = friction;
+  if (isDefined(tension)) restConfig.tension = tension;
+  if (isDefined(easing)) restConfig.easing = easing;
+  if (isDefined(delay)) restConfig.delay = delay;
+
+  const _config = {
+    ...initialConfig,
+    ...restConfig,
+  };
+
+  let from = { opacity: 0 };
+  let enter = { opacity: 1 };
+  let leave = { opacity: 0 };
+
+  const interpolation = animationConfig?.interpolation;
+  if (interpolation) {
+    from = interpolation[0];
+    enter = interpolation[1];
+    leave = interpolation[2];
+  }
+
+  const transitions = useTransition(location, {
+    from,
+    enter,
+    leave,
+    config: _config,
+  });
+
+  if (animationEnabled) {
+    return transitions((props, item) => (
+      <animated.div
+        style={{
+          ...props,
+          position: "absolute",
+          left: 0,
+          top: 0,
+          width: "100%",
+        }}
+      >
+        {children(item)}
+      </animated.div>
+    ));
+  } else {
+    return children(location);
+  }
+};
+
 /**
  * Higher Order Component which wraps overall component tree
  * Auth.Provider
@@ -25,6 +147,8 @@ import { getParsedPaths, reOrderPaths } from "./Utils";
  * @config prop accepts an object with isLoggedIn and userRole keys, can be accessed with useAuth() hook
  * Auth.Screens
  * @path prop accepts a string or null, null represents "/" while any other string path for nested navigation
+ * @animationEnabled prop accepts a boolean, positions all the pages absolutely
+ * @animationConfig prop accepts config as useAnimationValue() config
  */
 export const Auth = {
   Provider: (props: AuthProviderParams) => {
@@ -40,11 +164,17 @@ export const Auth = {
       </AuthContext.Provider>
     );
   },
-  Screens: ({ path }: { path?: string }) => {
-    const {
-      publicPaths: PUBLIC_PATHS,
-      privatePaths: PRIVATE_PATHS,
-    } = React.useContext(NavigationContext);
+  Screens: ({
+    path,
+    animationEnabled,
+    animationConfig,
+  }: {
+    path?: string;
+    animationEnabled?: boolean;
+    animationConfig?: AnimationConfig;
+  }) => {
+    const { publicPaths: PUBLIC_PATHS, privatePaths: PRIVATE_PATHS } =
+      React.useContext(NavigationContext);
 
     if (!!path) {
       const parser = getParsedPaths("nestedPaths");
@@ -67,147 +197,160 @@ export const Auth = {
       );
 
       return (
-        <Switch>
-          {
-            // PUBLIC ROUTES
-            filteredNestedPublicRoutes.length &&
-              filteredNestedPublicRoutes
-                .filter(({ path }: PublicPathParams) => path !== null) // Other than Not Found Page
-                .map(
-                  (
-                    {
-                      path,
-                      component,
-                      restricted,
-                      exact = true,
-                      nestedPaths,
-                    }: PublicPathParams,
-                    index: number
-                  ) => {
-                    let _exact = exact;
-                    if (!!nestedPaths) {
-                      _exact = false;
+        <RouterAnimationWrapper {...{ animationEnabled, animationConfig }}>
+          {(item: any) => (
+            <Switch location={item}>
+              {
+                // PUBLIC ROUTES
+                filteredNestedPublicRoutes.length &&
+                  filteredNestedPublicRoutes
+                    .filter(({ path }: PublicPathParams) => path !== null) // Other than Not Found Page
+                    .map(
+                      (
+                        {
+                          path,
+                          component,
+                          restricted,
+                          exact = true,
+                          nestedPaths,
+                        }: PublicPathParams,
+                        index: number
+                      ) => {
+                        let _exact = exact;
+                        if (!!nestedPaths) {
+                          _exact = false;
+                        }
+
+                        return (
+                          <PublicRoute
+                            key={index}
+                            path={path}
+                            component={component}
+                            restricted={!!restricted}
+                            exact={_exact}
+                          />
+                        );
+                      }
+                    )
+              }
+              {
+                // PRIVATE ROUTES
+                filteredNestedPrivateRoutes.length &&
+                  filteredNestedPrivateRoutes.map(
+                    (
+                      {
+                        path,
+                        component,
+                        exact = true,
+                        nestedPaths,
+                      }: PrivatePathParams,
+                      index: number
+                    ) => {
+                      let _exact = exact;
+                      if (!!nestedPaths) {
+                        _exact = false;
+                      }
+
+                      return (
+                        <PrivateRoute
+                          key={index}
+                          path={path}
+                          component={component}
+                          exact={_exact}
+                        />
+                      );
                     }
-
-                    return (
-                      <PublicRoute
-                        key={index}
-                        path={path}
-                        component={component}
-                        restricted={!!restricted}
-                        exact={_exact}
-                      />
-                    );
-                  }
-                )
-          }
-          {
-            // PRIVATE ROUTES
-            filteredNestedPrivateRoutes.length &&
-              filteredNestedPrivateRoutes.map(
-                (
-                  {
-                    path,
-                    component,
-                    exact = true,
-                    nestedPaths,
-                  }: PrivatePathParams,
-                  index: number
-                ) => {
-                  let _exact = exact;
-                  if (!!nestedPaths) {
-                    _exact = false;
-                  }
-
-                  return (
-                    <PrivateRoute
-                      key={index}
-                      path={path}
-                      component={component}
-                      exact={_exact}
-                    />
-                  );
-                }
-              )
-          }
-        </Switch>
+                  )
+              }
+            </Switch>
+          )}
+        </RouterAnimationWrapper>
       );
     } else {
       return (
-        <Switch>
-          {
-            // PUBLIC ROUTES
-            PUBLIC_PATHS.length &&
-              PUBLIC_PATHS.filter(({ path }: PublicPathParams) => path !== null) // Other than Not Found Page
-                .map(
-                  (
-                    {
-                      path,
-                      component,
-                      restricted,
-                      exact = true,
-                      nestedPaths,
-                    }: PublicPathParams,
-                    index: number
-                  ) => {
-                    let _exact = exact;
-                    if (!!nestedPaths) {
-                      _exact = false;
+        <RouterAnimationWrapper {...{ animationEnabled, animationConfig }}>
+          {(item: any) => (
+            <Switch location={item}>
+              {
+                // PUBLIC ROUTES
+                PUBLIC_PATHS.length &&
+                  PUBLIC_PATHS.filter(
+                    ({ path }: PublicPathParams) => path !== null
+                  ) // Other than Not Found Page
+                    .map(
+                      (
+                        {
+                          path,
+                          component,
+                          restricted,
+                          exact = true,
+                          nestedPaths,
+                        }: PublicPathParams,
+                        index: number
+                      ) => {
+                        let _exact = exact;
+                        if (!!nestedPaths) {
+                          _exact = false;
+                        }
+                        return (
+                          <PublicRoute
+                            key={index}
+                            path={path}
+                            component={component}
+                            restricted={!!restricted}
+                            exact={_exact}
+                          />
+                        );
+                      }
+                    )
+              }
+              {
+                // PRIVATE ROUTES
+                PRIVATE_PATHS.length &&
+                  PRIVATE_PATHS.map(
+                    (
+                      {
+                        path,
+                        component,
+                        exact = true,
+                        nestedPaths,
+                      }: PrivatePathParams,
+                      index: number
+                    ) => {
+                      let _exact = exact;
+                      if (!!nestedPaths) {
+                        _exact = false;
+                      }
+                      return (
+                        <PrivateRoute
+                          key={index}
+                          path={path}
+                          component={component}
+                          exact={_exact}
+                        />
+                      );
                     }
-                    return (
-                      <PublicRoute
-                        key={index}
-                        path={path}
-                        component={component}
-                        restricted={!!restricted}
-                        exact={_exact}
-                      />
-                    );
-                  }
-                )
-          }
-          {
-            // PRIVATE ROUTES
-            PRIVATE_PATHS.length &&
-              PRIVATE_PATHS.map(
-                (
-                  {
-                    path,
-                    component,
-                    exact = true,
-                    nestedPaths,
-                  }: PrivatePathParams,
-                  index: number
-                ) => {
-                  let _exact = exact;
-                  if (!!nestedPaths) {
-                    _exact = false;
-                  }
-                  return (
-                    <PrivateRoute
-                      key={index}
-                      path={path}
-                      component={component}
-                      exact={_exact}
-                    />
-                  );
-                }
-              )
-          }
-
-          {
-            // NOT FOUND
-            PUBLIC_PATHS.length &&
-              PUBLIC_PATHS.filter(
-                ({ path }: PublicPathParams) => path === null
-              ).map(
-                ({ component: Component }: PublicPathParams, index: number) =>
-                  index === 0 && (
-                    <Route key={index} render={() => <Component />} />
                   )
-              )
-          }
-        </Switch>
+              }
+
+              {
+                // NOT FOUND
+                PUBLIC_PATHS.length &&
+                  PUBLIC_PATHS.filter(
+                    ({ path }: PublicPathParams) => path === null
+                  ).map(
+                    (
+                      { component: Component }: PublicPathParams,
+                      index: number
+                    ) =>
+                      index === 0 && (
+                        <Route key={index} render={() => <Component />} />
+                      )
+                  )
+              }
+            </Switch>
+          )}
+        </RouterAnimationWrapper>
       );
     }
   },
@@ -222,13 +365,8 @@ export const Auth = {
  */
 export const Navigation = {
   Provider: (props: NavigationProviderParams) => {
-    const {
-      children,
-      privatePaths,
-      publicPaths,
-      userRoles,
-      routerType,
-    } = props;
+    const { children, privatePaths, publicPaths, userRoles, routerType } =
+      props;
 
     const parser = getParsedPaths("subPaths");
 

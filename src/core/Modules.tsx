@@ -11,15 +11,13 @@ export const PrivateRoute = (props: {
   exact: boolean;
 }) => {
   const { component: Component, ...rest } = props;
-  const { userRoles: USER_ROLES, origPublicPaths } = React.useContext(
-    NavigationContext
-  );
+  const { userRoles: USER_ROLES, origPublicPaths } =
+    React.useContext(NavigationContext);
 
   const { isLoggedIn, userRole } = React.useContext(AuthContext);
   const userRolesAccessPaths: Array<string> = USER_ROLES[userRole].access;
-  const parsedUserRolesAccessPaths: Array<string> = getParsedUserRole(
-    userRolesAccessPaths
-  );
+  const parsedUserRolesAccessPaths: Array<string> =
+    getParsedUserRole(userRolesAccessPaths);
 
   const accessPublicPath = origPublicPaths.filter((path: PublicPathParams) => {
     return userRole && canUserAccess(parsedUserRolesAccessPaths, path.path);
@@ -57,15 +55,13 @@ export const PublicRoute = (props: {
   exact: boolean;
 }) => {
   const { component: Component, restricted, ...rest } = props;
-  const { userRoles: USER_ROLES, origPrivatePaths } = React.useContext(
-    NavigationContext
-  );
+  const { userRoles: USER_ROLES, origPrivatePaths } =
+    React.useContext(NavigationContext);
 
   const { isLoggedIn, userRole } = React.useContext(AuthContext);
   const userRolesAccessPaths: Array<string> = USER_ROLES[userRole].access;
-  const parsedUserRolesAccessPaths: Array<string> = getParsedUserRole(
-    userRolesAccessPaths
-  );
+  const parsedUserRolesAccessPaths: Array<string> =
+    getParsedUserRole(userRolesAccessPaths);
 
   const accessPrivatePaths = origPrivatePaths.filter(
     (path: PrivatePathParams) => {

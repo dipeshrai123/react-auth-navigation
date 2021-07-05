@@ -1,6 +1,6 @@
 {
   "name": "react-auth-navigation",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "React library for authenticated routes",
   "main": "dist/index.js",
   "scripts": {
@@ -24,7 +24,9 @@
     "react-dom": ">=16.13.1",
     "react-router-dom": ">=5.2.0"
   },
-  "dependencies": {},
+  "dependencies": {
+    "react-ui-animate": "^1.1.5"
+  },
   "devDependencies": {
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
