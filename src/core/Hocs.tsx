@@ -8,7 +8,7 @@ import {
   NavLinkProps as InternalNavLinkProps,
   useLocation,
 } from "react-router-dom";
-import { SpringCore } from "react-ui-animate";
+import { useTransition, animated } from "react-spring";
 import { PrivateRoute, PublicRoute } from "./Modules";
 import {
   AuthProviderParams,
@@ -19,8 +19,6 @@ import {
 } from "./Types";
 import { AuthContext, NavigationContext } from "./Context";
 import { getParsedPaths, reOrderPaths } from "./Utils";
-
-const { animated, useTransition } = SpringCore;
 
 // check undefined or null
 const isDefined = (value: any): boolean => {

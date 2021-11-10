@@ -25,7 +25,7 @@
     "react-router-dom": ">=5.2.0"
   },
   "dependencies": {
-    "react-ui-animate": "^1.1.5"
+    "react-spring": "^9.3.0"
   },
   "devDependencies": {
     "@types/react": "^17.0.0",
