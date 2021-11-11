@@ -24,9 +24,7 @@
     "react-dom": ">=16.13.1",
     "react-router-dom": ">=5.2.0"
   },
-  "dependencies": {
-    "react-spring": "^9.3.0"
-  },
+  "dependencies": {},
   "devDependencies": {
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
