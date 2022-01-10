@@ -15,6 +15,13 @@ export const PrivateRoute = (props: {
     React.useContext(NavigationContext);
 
   const { isLoggedIn, userRole } = React.useContext(AuthContext);
+
+  if (!USER_ROLES[userRole]) {
+    throw new Error(
+      `User role '${userRole}' is not defined on root level navigation container access paths.`
+    );
+  }
+
   const userRolesAccessPaths: Array<string> = USER_ROLES[userRole].access;
   const parsedUserRolesAccessPaths: Array<string> =
     getParsedUserRole(userRolesAccessPaths);
@@ -59,6 +66,13 @@ export const PublicRoute = (props: {
     React.useContext(NavigationContext);
 
   const { isLoggedIn, userRole } = React.useContext(AuthContext);
+
+  if (!USER_ROLES[userRole]) {
+    throw new Error(
+      `User role '${userRole}' is not defined on root level navigation container access paths.`
+    );
+  }
+
   const userRolesAccessPaths: Array<string> = USER_ROLES[userRole].access;
   const parsedUserRolesAccessPaths: Array<string> =
     getParsedUserRole(userRolesAccessPaths);
