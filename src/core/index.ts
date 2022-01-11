@@ -1,4 +1,10 @@
-import { ActiveLink, Auth, Navigation, withNavigation } from "./Hocs";
+import {
+  ActiveLink,
+  AuthProvider,
+  AuthScreens,
+  NavigationProvider,
+  withNavigation,
+} from "./Hocs";
 import { useAuth, useNavigation, useQuery } from "./Hooks";
 
 import {
@@ -10,8 +16,9 @@ import {
 
 export {
   ActiveLink,
-  Auth,
-  Navigation,
+  AuthProvider,
+  AuthScreens,
+  NavigationProvider,
   withNavigation,
   useAuth,
   useNavigation,

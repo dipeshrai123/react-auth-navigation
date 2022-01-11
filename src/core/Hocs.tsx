@@ -26,10 +26,7 @@ import { getParsedPaths, reOrderPaths } from "./Utils";
  * Auth.Screens
  * @path prop accepts a string or null, null represents "/" while any other string path for nested navigation
  */
-function Auth() {
-  return null;
-}
-Auth.Provider = (props: AuthProviderParams) => {
+const AuthProvider = (props: AuthProviderParams) => {
   const { children, config, state } = props;
   const { routerType } = React.useContext(NavigationContext);
   return (
@@ -42,7 +39,8 @@ Auth.Provider = (props: AuthProviderParams) => {
     </AuthContext.Provider>
   );
 };
-Auth.Screens = ({ path }: { path?: string }) => {
+
+const AuthScreens = ({ path }: { path?: string }) => {
   const { publicPaths: PUBLIC_PATHS, privatePaths: PRIVATE_PATHS } =
     React.useContext(NavigationContext);
 
@@ -219,10 +217,7 @@ Auth.Screens = ({ path }: { path?: string }) => {
  * @userRoles prop an object with any number of user role key with its access end points path.
  * @routerType prop either "hash" or "browser"
  */
-function Navigation() {
-  return null;
-}
-Navigation.Provider = (props: NavigationProviderParams) => {
+const NavigationProvider = (props: NavigationProviderParams) => {
   const { children, privatePaths, publicPaths, userRoles, routerType } = props;
 
   const parser = getParsedPaths("subPaths");
@@ -266,11 +261,11 @@ const withNavigation = (
   } = navigationConfig;
   return function (props: any) {
     return (
-      <Navigation.Provider
+      <NavigationProvider
         {...{ routerType, publicPaths, privatePaths, userRoles }}
       >
         <Component {...props} />
-      </Navigation.Provider>
+      </NavigationProvider>
     );
   };
 };
@@ -283,4 +278,10 @@ const ActiveLink = (
   return <InternalNavLink {...props} />;
 };
 
-export { Auth, ActiveLink, Navigation, withNavigation };
+export {
+  AuthProvider,
+  AuthScreens,
+  ActiveLink,
+  NavigationProvider,
+  withNavigation,
+};
