@@ -38,9 +38,12 @@ export interface PrivatePathParams {
 
 export type UserRoleParams = { [role: string]: { access: string[] } };
 
+export type PublicPathsType = PublicPathParams[];
+export type PrivatePathsType = PrivatePathParams[];
+
 export interface NavigationConfigParams {
-  publicPaths: PublicPathParams[];
-  privatePaths: PrivatePathParams[];
+  publicPaths: PublicPathsType;
+  privatePaths: PrivatePathsType;
   userRoles: UserRoleParams;
   routerType?: "browser" | "hash";
 }

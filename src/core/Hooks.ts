@@ -11,7 +11,7 @@ import { getParsedUserRole, canUserAccess, getParsedPaths } from "./Utils";
 
 /**
  * Hook which provides all the authentication properties
- * @returns an object with config and state props passed to Auth.Provider HOC. 
+ * @returns an object with config and state props passed to Auth.Provider HOC.
  */
 export const useAuth = () => {
   return useContext(AuthContext) as DefaultAuthConfigParams & stateType;
@@ -39,9 +39,8 @@ export const useNavigation = () => {
   const parsedPrivatePaths = parser(PRIVATE_PATHS);
 
   const userRolesAccessPaths: Array<string> = USER_ROLES[userRole].access;
-  const parsedUserRolesAccessPaths: Array<string> = getParsedUserRole(
-    userRolesAccessPaths
-  );
+  const parsedUserRolesAccessPaths: Array<string> =
+    getParsedUserRole(userRolesAccessPaths);
 
   const filteredPublicRoutes = parsedPublicPaths.filter(
     ({
