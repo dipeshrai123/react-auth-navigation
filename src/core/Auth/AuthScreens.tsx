@@ -10,7 +10,7 @@ import { getParsedPaths } from "../Utils";
  * Auth.Screens
  * @path prop accepts a string or null, null represents "/" while any other string path for nested navigation
  */
-export default function AuthScreens({ path }: { path?: string }) {
+function AuthScreens({ path }: { path?: string }) {
   const { publicPaths: PUBLIC_PATHS, privatePaths: PRIVATE_PATHS } =
     React.useContext(NavigationContext);
 
@@ -179,3 +179,5 @@ export default function AuthScreens({ path }: { path?: string }) {
     );
   }
 }
+
+export default AuthScreens;

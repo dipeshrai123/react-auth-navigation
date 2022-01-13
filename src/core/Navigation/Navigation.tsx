@@ -11,7 +11,7 @@ import { getParsedPaths, reOrderPaths } from "../Utils";
  * @userRoles prop an object with any number of user role key with its access end points path.
  * @routerType prop either "hash" or "browser"
  */
-export default function NavigationProvider(props: NavigationProviderParams) {
+function Navigation(props: NavigationProviderParams) {
   const { children, privatePaths, publicPaths, userRoles, routerType } = props;
 
   const parser = getParsedPaths("subPaths");
@@ -37,3 +37,5 @@ export default function NavigationProvider(props: NavigationProviderParams) {
     </NavigationContext.Provider>
   );
 }
+
+export default Navigation;
