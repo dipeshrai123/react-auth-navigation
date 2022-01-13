@@ -13,12 +13,12 @@ export interface AuthProviderParams {
 
 export interface PublicPathParams {
   key?: string | number;
-  name: string;
-  path: string;
+  name: string | "";
+  path: string | "";
   component: React.ComponentType<any>;
   exact?: boolean;
   visible?: boolean;
-  restricted: boolean;
+  restricted: boolean | null;
   subPaths?: PublicPathParams[];
   nestedPaths?: PublicPathParams[];
   props?: any;

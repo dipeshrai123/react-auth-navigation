@@ -14,7 +14,11 @@ function AuthScreens({ path }: { path?: string }) {
   const { publicPaths: PUBLIC_PATHS, privatePaths: PRIVATE_PATHS } =
     React.useContext(NavigationContext);
 
-  if (!!path) {
+  const hasPath = !!path;
+  let publicPaths = [];
+  let privatePaths = [];
+
+  if (hasPath) {
     const parser = getParsedPaths("nestedPaths");
     const parsedPublicPaths = parser(PUBLIC_PATHS);
     const parsedPrivatePaths = parser(PRIVATE_PATHS);
@@ -34,150 +38,88 @@ function AuthScreens({ path }: { path?: string }) {
       (val: any) => val.path !== path
     );
 
-    return (
-      <Switch>
-        {
-          // PUBLIC ROUTES
-          filteredNestedPublicRoutes.length &&
-            filteredNestedPublicRoutes
-              .filter(({ path }: PublicPathParams) => path !== null) // Other than Not Found Page
-              .map(
-                (
-                  {
-                    path,
-                    component,
-                    restricted,
-                    exact = true,
-                    nestedPaths,
-                  }: PublicPathParams,
-                  index: number
-                ) => {
-                  let _exact = exact;
-                  if (!!nestedPaths) {
-                    _exact = false;
-                  }
-
-                  return (
-                    <PublicRoute
-                      key={index}
-                      path={path}
-                      component={component}
-                      restricted={!!restricted}
-                      exact={_exact}
-                    />
-                  );
-                }
-              )
-        }
-        {
-          // PRIVATE ROUTES
-          filteredNestedPrivateRoutes.length &&
-            filteredNestedPrivateRoutes.map(
-              (
-                {
-                  path,
-                  component,
-                  exact = true,
-                  nestedPaths,
-                }: PrivatePathParams,
-                index: number
-              ) => {
-                let _exact = exact;
-                if (!!nestedPaths) {
-                  _exact = false;
-                }
-
-                return (
-                  <PrivateRoute
-                    key={index}
-                    path={path}
-                    component={component}
-                    exact={_exact}
-                  />
-                );
-              }
-            )
-        }
-      </Switch>
-    );
+    publicPaths = filteredNestedPublicRoutes;
+    privatePaths = filteredNestedPrivateRoutes;
   } else {
-    return (
-      <Switch>
-        {
-          // PUBLIC ROUTES
-          PUBLIC_PATHS.length &&
-            PUBLIC_PATHS.filter(({ path }: PublicPathParams) => path !== null) // Other than Not Found Page
-              .map(
-                (
-                  {
-                    path,
-                    component,
-                    restricted,
-                    exact = true,
-                    nestedPaths,
-                  }: PublicPathParams,
-                  index: number
-                ) => {
-                  let _exact = exact;
-                  if (!!nestedPaths) {
-                    _exact = false;
-                  }
-                  return (
-                    <PublicRoute
-                      key={index}
-                      path={path}
-                      component={component}
-                      restricted={!!restricted}
-                      exact={_exact}
-                    />
-                  );
-                }
-              )
-        }
-        {
-          // PRIVATE ROUTES
-          PRIVATE_PATHS.length &&
-            PRIVATE_PATHS.map(
+    publicPaths = PUBLIC_PATHS;
+    privatePaths = PRIVATE_PATHS;
+  }
+
+  return (
+    <Switch>
+      {
+        // PUBLIC ROUTES
+        publicPaths.length &&
+          publicPaths
+            .filter(({ path }: PublicPathParams) => path !== null) // Other than Not Found Page
+            .map(
               (
                 {
                   path,
                   component,
+                  restricted,
                   exact = true,
                   nestedPaths,
-                }: PrivatePathParams,
+                }: PublicPathParams,
                 index: number
               ) => {
                 let _exact = exact;
                 if (!!nestedPaths) {
                   _exact = false;
                 }
+
                 return (
-                  <PrivateRoute
+                  <PublicRoute
                     key={index}
                     path={path}
                     component={component}
+                    restricted={!!restricted}
                     exact={_exact}
                   />
                 );
               }
             )
-        }
+      }
+      {
+        // PRIVATE ROUTES
+        privatePaths.length &&
+          privatePaths.map(
+            (
+              { path, component, exact = true, nestedPaths }: PrivatePathParams,
+              index: number
+            ) => {
+              let _exact = exact;
+              if (!!nestedPaths) {
+                _exact = false;
+              }
 
-        {
-          // NOT FOUND
-          PUBLIC_PATHS.length &&
-            PUBLIC_PATHS.filter(
-              ({ path }: PublicPathParams) => path === null
-            ).map(
+              return (
+                <PrivateRoute
+                  key={index}
+                  path={path}
+                  component={component}
+                  exact={_exact}
+                />
+              );
+            }
+          )
+      }
+
+      {
+        // NOT FOUND
+        !hasPath &&
+          publicPaths.length &&
+          publicPaths
+            .filter(({ path }: PublicPathParams) => path === null)
+            .map(
               ({ component: Component }: PublicPathParams, index: number) =>
                 index === 0 && (
                   <Route key={index} render={() => <Component />} />
                 )
             )
-        }
-      </Switch>
-    );
-  }
+      }
+    </Switch>
+  );
 }
 
 export default AuthScreens;
