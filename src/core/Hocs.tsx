@@ -26,7 +26,11 @@ import { getParsedPaths, reOrderPaths } from "./Utils";
  * Auth.Screens
  * @path prop accepts a string or null, null represents "/" while any other string path for nested navigation
  */
-const AuthProvider = (props: AuthProviderParams) => {
+export function Auth() {
+  return null;
+}
+
+Auth.Provider = function (props: AuthProviderParams) {
   const { children, config, state } = props;
   const { routerType } = React.useContext(NavigationContext);
   return (
@@ -40,7 +44,7 @@ const AuthProvider = (props: AuthProviderParams) => {
   );
 };
 
-const AuthScreens = ({ path }: { path?: string }) => {
+Auth.Screens = function ({ path }: { path?: string }) {
   const { publicPaths: PUBLIC_PATHS, privatePaths: PRIVATE_PATHS } =
     React.useContext(NavigationContext);
 
@@ -217,7 +221,11 @@ const AuthScreens = ({ path }: { path?: string }) => {
  * @userRoles prop an object with any number of user role key with its access end points path.
  * @routerType prop either "hash" or "browser"
  */
-const NavigationProvider = (props: NavigationProviderParams) => {
+export function Navigation() {
+  return null;
+}
+
+Navigation.Provider = function (props: NavigationProviderParams) {
   const { children, privatePaths, publicPaths, userRoles, routerType } = props;
 
   const parser = getParsedPaths("subPaths");
@@ -249,10 +257,10 @@ const NavigationProvider = (props: NavigationProviderParams) => {
  * @param Component Top level component of entire component tree.
  * @param navigationConfig Object with publicPaths, privatePaths, userRoles and routerType
  */
-const withNavigation = (
+export function withNavigation(
   Component: React.ComponentType,
   navigationConfig: NavigationConfigParams
-) => {
+) {
   const {
     publicPaths,
     privatePaths,
@@ -261,27 +269,19 @@ const withNavigation = (
   } = navigationConfig;
   return function (props: any) {
     return (
-      <NavigationProvider
+      <Navigation.Provider
         {...{ routerType, publicPaths, privatePaths, userRoles }}
       >
         <Component {...props} />
-      </NavigationProvider>
+      </Navigation.Provider>
     );
   };
-};
+}
 
 // NavLink Component as ActiveLink
-const ActiveLink = (
+export function ActiveLink(
   props: React.PropsWithoutRef<InternalNavLinkProps> &
     React.RefAttributes<HTMLAnchorElement>
-) => {
+) {
   return <InternalNavLink {...props} />;
-};
-
-export {
-  AuthProvider,
-  AuthScreens,
-  ActiveLink,
-  NavigationProvider,
-  withNavigation,
-};
+}

@@ -13,15 +13,15 @@ import { getParsedUserRole, canUserAccess, getParsedPaths } from "./Utils";
  * Hook which provides all the authentication properties
  * @returns an object with config and state props passed to Auth.Provider HOC.
  */
-const useAuth = () => {
+export function useAuth() {
   return useContext(AuthContext) as DefaultAuthConfigParams & stateType;
-};
+}
 
 /**
  * Hook for getting all navigation properties, methods and routes
  * @returns Object with navigation, history, location and params
  */
-const useNavigation = () => {
+export function useNavigation() {
   const history = useHistory();
   const location = useLocation();
   const params = useParams();
@@ -122,14 +122,14 @@ const useNavigation = () => {
     location,
     params,
   };
-};
+}
 
 /**
  * Get query params for current url location
  * @param queryStr Query params string can be pass which overrides the current location query
  * @returns Object with key value pair
  */
-const useQuery = (queryStr = null) => {
+export function useQuery(queryStr = null) {
   const { location } = useNavigation();
   const queryParams = new URLSearchParams(queryStr ?? location.search);
 
@@ -139,6 +139,4 @@ const useQuery = (queryStr = null) => {
   }
 
   return resultObject;
-};
-
-export { useAuth, useNavigation, useQuery };
+}
