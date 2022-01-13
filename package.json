@@ -1,6 +1,6 @@
 {
   "name": "react-auth-navigation",
-  "version": "1.1.1-alpha4",
+  "version": "1.1.1-alpha5",
   "description": "React library for authenticated routes",
   "main": "dist/index.js",
   "scripts": {

@@ -26,11 +26,7 @@ import { getParsedPaths, reOrderPaths } from "./Utils";
  * Auth.Screens
  * @path prop accepts a string or null, null represents "/" while any other string path for nested navigation
  */
-export function Auth() {
-  return null;
-}
-
-Auth.Provider = function (props: AuthProviderParams) {
+const AuthProvider = function (props: AuthProviderParams) {
   const { children, config, state } = props;
   const { routerType } = React.useContext(NavigationContext);
   return (
@@ -44,7 +40,7 @@ Auth.Provider = function (props: AuthProviderParams) {
   );
 };
 
-Auth.Screens = function ({ path }: { path?: string }) {
+const AuthScreens = function ({ path }: { path?: string }) {
   const { publicPaths: PUBLIC_PATHS, privatePaths: PRIVATE_PATHS } =
     React.useContext(NavigationContext);
 
@@ -214,6 +210,13 @@ Auth.Screens = function ({ path }: { path?: string }) {
   }
 };
 
+export function Auth() {
+  return;
+}
+
+Auth.Provider = AuthProvider;
+Auth.Screens = AuthScreens;
+
 /**
  * Higher Order Component to define private, public and protected routes for different user roles.
  * @publicPaths prop accepts an array with key, name, path, component, restricted, subPaths, nestedPaths and props.
@@ -221,11 +224,8 @@ Auth.Screens = function ({ path }: { path?: string }) {
  * @userRoles prop an object with any number of user role key with its access end points path.
  * @routerType prop either "hash" or "browser"
  */
-export function Navigation() {
-  return null;
-}
 
-Navigation.Provider = function (props: NavigationProviderParams) {
+const NavigationProvider = function (props: NavigationProviderParams) {
   const { children, privatePaths, publicPaths, userRoles, routerType } = props;
 
   const parser = getParsedPaths("subPaths");
@@ -251,6 +251,12 @@ Navigation.Provider = function (props: NavigationProviderParams) {
     </NavigationContext.Provider>
   );
 };
+
+export function Navigation() {
+  return;
+}
+
+Navigation.Provider = NavigationProvider;
 
 /**
  * Functional Higher Order Component which is alternative to Navigation HOC.
