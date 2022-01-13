@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Switch, Route } from "react-router-dom";
+import * as ReactRouterDOM from "react-router-dom";
 import { PrivateRoute, PublicRoute } from "../Modules";
 import { PublicPathParams, PrivatePathParams } from "../Types";
 import { NavigationContext } from "../Context";
@@ -46,7 +46,7 @@ function AuthScreens({ path }: { path?: string }) {
   }
 
   return (
-    <Switch>
+    <ReactRouterDOM.Switch>
       {
         // PUBLIC ROUTES
         publicPaths.length &&
@@ -114,11 +114,14 @@ function AuthScreens({ path }: { path?: string }) {
             .map(
               ({ component: Component }: PublicPathParams, index: number) =>
                 index === 0 && (
-                  <Route key={index} render={() => <Component />} />
+                  <ReactRouterDOM.Route
+                    key={index}
+                    render={() => <Component />}
+                  />
                 )
             )
       }
-    </Switch>
+    </ReactRouterDOM.Switch>
   );
 }
 
