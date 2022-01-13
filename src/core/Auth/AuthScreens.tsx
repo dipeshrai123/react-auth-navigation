@@ -1,6 +1,6 @@
 import * as React from "react";
 import * as ReactRouterDOM from "react-router-dom";
-import { PrivateRoute, PublicRoute } from "../Modules";
+import * as Modules from "../Modules";
 import { PublicPathParams, PrivatePathParams } from "../Types";
 import { NavigationContext } from "../Context";
 import { getParsedPaths } from "../Utils";
@@ -69,7 +69,7 @@ function AuthScreens({ path }: { path?: string }) {
                 }
 
                 return (
-                  <PublicRoute
+                  <Modules.PublicRoute
                     key={index}
                     path={path}
                     component={component}
@@ -94,7 +94,7 @@ function AuthScreens({ path }: { path?: string }) {
               }
 
               return (
-                <PrivateRoute
+                <Modules.PrivateRoute
                   key={index}
                   path={path}
                   component={component}
