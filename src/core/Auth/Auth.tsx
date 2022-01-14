@@ -3,7 +3,6 @@ import { BrowserRouter, HashRouter } from "react-router-dom";
 
 import { AuthProviderParams } from "../Types";
 import { AuthContext, NavigationContext } from "../Context";
-import AuthScreens from "./AuthScreens";
 
 /**
  * Higher Order Component which wraps overall component tree
@@ -25,5 +24,4 @@ function Auth(props: AuthProviderParams) {
   );
 }
 
-Auth.Screens = AuthScreens;
 export default Auth;
