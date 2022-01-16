@@ -2,7 +2,7 @@ import * as React from "react";
 
 import { NavigationProviderParams } from "../Types";
 import { NavigationContext } from "../Context";
-import { getParsedPaths, reOrderPaths } from "../Utils";
+import { getParsedPaths, reOrderPaths } from "../Utilities";
 
 /**
  * Higher Order Component to define private, public and protected routes for different user roles.

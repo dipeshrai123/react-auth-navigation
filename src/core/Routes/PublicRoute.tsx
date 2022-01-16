@@ -3,7 +3,7 @@ import { Route, Redirect } from "react-router-dom";
 
 import { AuthContext, NavigationContext } from "../Context";
 import { PrivatePathParams } from "../Types";
-import { getParsedUserRole, canUserAccess } from "../Utils";
+import { getParsedUserRole, canUserAccess } from "../Utilities";
 
 // Public and Restricted Routes
 const PublicRoute = (props: {

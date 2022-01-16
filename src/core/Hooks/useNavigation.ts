@@ -5,17 +5,9 @@ import {
   useParams,
   matchPath,
 } from "react-router-dom";
-import { stateType, DefaultAuthConfigParams, publicReturnType } from "./Types";
-import { AuthContext, NavigationContext } from "./Context";
-import { getParsedUserRole, canUserAccess, getParsedPaths } from "./Utils";
-
-/**
- * Hook which provides all the authentication properties
- * @returns an object with config and state props passed to Auth.Provider HOC.
- */
-export function useAuth() {
-  return useContext(AuthContext) as DefaultAuthConfigParams & stateType;
-}
+import { publicReturnType } from "../Types";
+import { AuthContext, NavigationContext } from "../Context";
+import { getParsedUserRole, canUserAccess, getParsedPaths } from "../Utilities";
 
 /**
  * Hook for getting all navigation properties, methods and routes
@@ -122,21 +114,4 @@ export function useNavigation() {
     location,
     params,
   };
-}
-
-/**
- * Get query params for current url location
- * @param queryStr Query params string can be pass which overrides the current location query
- * @returns Object with key value pair
- */
-export function useQuery(queryStr = null) {
-  const { location } = useNavigation();
-  const queryParams = new URLSearchParams(queryStr ?? location.search);
-
-  const resultObject = {};
-  for (let [key, value] of queryParams.entries()) {
-    resultObject[key] = value;
-  }
-
-  return resultObject;
 }

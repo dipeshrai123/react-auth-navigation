@@ -3,7 +3,7 @@ import { Switch, Route } from "react-router-dom";
 
 import { PublicPathParams, PrivatePathParams } from "../Types";
 import { NavigationContext } from "../Context";
-import { getParsedPaths } from "../Utils";
+import { getParsedPaths } from "../Utilities";
 import { PublicRoute, PrivateRoute } from "../Routes";
 
 /**
