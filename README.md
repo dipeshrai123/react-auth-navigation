@@ -1,11 +1,8 @@
 # react-auth-navigation
+
 > React library for authenticated routes
 
-
-
 [![NPM](https://shields.io/npm/v/react-auth-navigation.svg)](https://www.npmjs.com/package/react-auth-navigation) [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
-
-
 
 ## Install
 
@@ -17,13 +14,9 @@ npm i react-auth-navigation
 yarn add react-auth-navigation
 ```
 
-
-
 ## Why is react-auth-navigation ?
 
 It is a react library built on top of **react-router-dom**. React Auth Navigation provides us to create an authenticated routes and manages all the complicated routing and authenticating the users in client-side.
-
-
 
 ## Usage
 
@@ -38,8 +31,6 @@ But, What exactly are public, private and protected routes ?
 - **Protected routes** are those types of public routes which cannot be accessed if a user is logged in.
 
 Now Lets create authenticated routes.
-
-
 
 #### withNavigation()
 
@@ -78,11 +69,9 @@ Let us configure the _second argument_.
   }
   ```
 
-
-
 **Example**
 
-Basic example of routing. 
+Basic example of routing.
 
 First create **publicPaths**, **privatePaths** and **userRoles**.
 
@@ -109,9 +98,9 @@ export const privatePaths = [
   },
 ];
 
-export const userRoles = { 
-    user: { access: ["/public"] }, 
-    admin:  { access: ["*"] }, // '*' defines to give access to all paths.
+export const userRoles = {
+  user: { access: ["/public"] },
+  admin: { access: ["*"] }, // '*' defines to give access to all paths.
 };
 ```
 
@@ -136,17 +125,13 @@ export default withNavigation(App, {
 });
 ```
 
-And that's it. Its all you should do to define the routes and user-roles. 
-
-
+And that's it. Its all you should do to define the routes and user-roles.
 
 ### Auth
 
 Auth provides 2 different HOCs which handles all the authentications defined by **withNavigation()** HOC.
 
-
-
-#### Auth.Provider
+#### Auth
 
 It lets you define the current state of a user i.e. ( logged state and logged role ) and allows us to define global state which can be accessed from any component with **useAuth()** hook.
 
@@ -169,20 +154,16 @@ It returns all the authenticated screens based on the current state of a user an
 
 It can accepts one optional prop:
 
-- **path** _( string ) ( optional )
+- **path** \_( string ) ( optional )
 
   It is required for nested routes. By default its value is taken as _null_ or _'/'_;
 
-  
-
-**Auth.Screens** hoc should be wrapped inside **Auth.Provider** hoc.
-
-
+**Auth.Screens** hoc should be wrapped inside **Auth** hoc.
 
 **Example**
 
 ```javascript
-// app.js 
+// app.js
 import { withNavigation, Auth } from "react-auth-navigation";
 import { publicPaths, privatePaths, userRoles } from "./routes";
 
@@ -190,16 +171,16 @@ const App = () => {
   const [config, setConfig] = useState({ isLoggedIn: false, userRole: "user" });
 
   return (
-      <Auth.Provider
-        config={config}
-        state={{
-          logout: () => {
-            setConfig({ isLoggedIn: false, userRole: "user" });
-          }
-        }}
-      >
-        <Auth.Screens />
-      </Auth.Provider>
+    <Auth
+      config={config}
+      state={{
+        logout: () => {
+          setConfig({ isLoggedIn: false, userRole: "user" });
+        },
+      }}
+    >
+      <Auth.Screens />
+    </Auth>
   );
 };
 
@@ -210,8 +191,6 @@ export default withNavigation(App, {
 });
 ```
 
-
-
 ### useNavigation()
 
 **useNavigation()** is a hook which gives access to the navigation object providing you to navigate between different screens, providing you all accessible routes according to the current state of a user ( logged state and logged role ). It is also very useful for a component which is not directly a route defined in public or private paths because it doesn't have access to history prop directly.
@@ -220,9 +199,9 @@ export default withNavigation(App, {
 
 - **navigation** _( object )_
 
-   Object for handling navigation and provides all authenticated routes name and path.
+  Object for handling navigation and provides all authenticated routes name and path.
 
-  - **routes** _( object )_ : Object with name key you defined in **publicPaths** ** and **privatePaths** in **withNavigation()** and values are the object of name and path for a defined key.
+  - **routes** _( object )_ : Object with name key you defined in **publicPaths** ** and **privatePaths** in **withNavigation()\*\* and values are the object of name and path for a defined key.
   - **navigate** _( string )_ : Function which takes either string or an object similar to _react-router-dom’s_ history.push() function.
   - **goBack** _( function )_ : Function which will navigate to the previous screen.
   - **goForward** _( function )_ : Function which will navigate to the next screen if history is available.
@@ -233,23 +212,17 @@ export default withNavigation(App, {
 
 - **params** _( object )_ : Params object same as _react-router-dom's_ params object.
 
-
-
 **Example**
 
 ```javascript
 import { useNavigation } from "react-auth-navigation";
 
-const { navigation, history, location, params } = useNavigation()
+const { navigation, history, location, params } = useNavigation();
 ```
-
-
 
 ### useAuth()
 
 **useAuth()** is a hook which gives access to the config object and state object defined in **<Auth.Provider>** hoc directly. By default it returns an object with **isLoggedIn**, **userRole** and all the keys passed inside the state object.
-
-
 
 **Example**
 
@@ -257,10 +230,10 @@ const { navigation, history, location, params } = useNavigation()
 import { useAuth } from "react-auth-navigation";
 
 export default function() {
-    
+
     // config and state can be accessed with useAuth()
     const { isLoggedIn, userRole, logout } = useAuth();
-    
+
     return () {
         // ...
     }
