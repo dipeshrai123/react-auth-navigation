@@ -1,50 +1,58 @@
-export interface DefaultAuthConfigParams {
+/**
+ * Auth config for Auth context hoc
+ * @param { boolean } isLoggedIn - is the user logged in or not
+ * @param { string } userRole - string which defines the role of currently logged user
+ */
+export interface AuthConfig {
   isLoggedIn: boolean;
   userRole: string;
 }
 
-export type stateType = { [key: string]: () => void } | { [key: string]: any };
+/**
+ * Auth state object which can accept any parameters
+ */
+export type AuthState = { [key: string]: () => void } | { [key: string]: any };
 
 export interface AuthProviderParams {
   children: React.ReactNode;
-  config: DefaultAuthConfigParams;
-  state?: stateType;
+  config: AuthConfig;
+  state?: AuthState;
 }
 
-export interface PublicPathParams {
+/**
+ * Path Params interface defines the common interface for both
+ * public and private params
+ */
+interface PathParams {
   key?: string | number;
-  name: string | "";
-  path: string | "";
+  name: string | ""; // "" is only for not found
+  path: string | ""; // "" is only for not found
   component: React.ComponentType<any>;
   exact?: boolean;
   visible?: boolean;
-  restricted: boolean | null;
+  props?: any;
+}
+
+export interface PublicPathParams extends PathParams {
   subPaths?: PublicPathParams[];
   nestedPaths?: PublicPathParams[];
-  props?: any;
+  restricted: boolean | null; // null is for not found
 }
 
-export interface PrivatePathParams {
-  key?: string | number;
-  name: string;
-  path: string;
-  component: React.ComponentType<any>;
-  exact?: boolean;
-  visible?: boolean;
+export interface PrivatePathParams extends PathParams {
   subPaths?: PrivatePathParams[];
   nestedPaths?: PrivatePathParams[];
-  props?: any;
 }
 
-export type UserRoleParams = { [role: string]: { access: string[] } };
+export type PublicPath = PublicPathParams[];
+export type PrivatePath = PrivatePathParams[];
 
-export type PublicPathsType = PublicPathParams[];
-export type PrivatePathsType = PrivatePathParams[];
+export type UserRole = { [role: string]: { access: string[] } };
 
 export interface NavigationConfigParams {
-  publicPaths: PublicPathsType;
-  privatePaths: PrivatePathsType;
-  userRoles: UserRoleParams;
+  publicPaths: PublicPath;
+  privatePaths: PrivatePath;
+  userRoles: UserRole;
   routerType?: "browser" | "hash";
 }
 

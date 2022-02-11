@@ -1,11 +1,11 @@
 import { useContext } from "react";
-import { stateType, DefaultAuthConfigParams } from "../Types";
+import { AuthState, AuthConfig } from "../Types";
 import { AuthContext } from "../Context";
 
 /**
  * Hook which provides all the authentication properties
- * @returns an object with config and state props passed to Auth.Provider HOC.
+ * @returns an object with config and state props passed to Auth HOC.
  */
 export function useAuth() {
-  return useContext(AuthContext) as DefaultAuthConfigParams & stateType;
+  return useContext(AuthContext) as AuthConfig & AuthState;
 }

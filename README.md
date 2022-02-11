@@ -49,6 +49,7 @@ Let us configure the _second argument_.
   - **restricted** _( boolean )_ : If **true** then it is **protected** route otherwise **public**.
   - **subPaths** _( array ) ( optional )_ : Accepts array of object with same as **publicPaths** array. It is used to make sub routes _( full-page routing )_.
   - **nestedPaths** _( array ) ( optional )_ : Accepts array of object with same as **publicPaths** array. It is used to make nested routes _( component routing )_.
+  - **props** _( any ) ( optional )_ : Defines the props for each route keys.
 
 - **privatePaths** accepts an array of object with following keys:
 
@@ -58,6 +59,7 @@ Let us configure the _second argument_.
   - **component** _( Component )_ : Defines a component for a path.
   - **subPaths** _( array ) ( optional )_ : Accepts array of object with same as **publicPaths** array. It is used to make sub routes _( full-page routing )_.
   - **nestedPaths** _( array ) ( optional )_ : Accepts array of object with same as **publicPaths** array. It is used to make nested routes _( component routing )_.
+  - **props** _( any ) ( optional )_ : Defines the props for each route keys.
 
 - **userRoles** is used to define the access routes for a particular user roles. accepts an object with following format:
 
@@ -150,13 +152,13 @@ It accepts two props:
 
 #### Auth.Screens
 
-It returns all the authenticated screens based on the current state of a user and all the routes provided to **withNavigation() **HOC. Component with **Auth.Provider** hoc should be wrapped with **withNavigation()** hoc.
+It returns all the authenticated screens based on the current state of a user and all the routes provided to **withNavigation()** HOC. Component with **Auth.Provider** hoc should be wrapped with **withNavigation()** hoc.
 
 It can accepts one optional prop:
 
-- **path** \_( string ) ( optional )
+- **path** _( string ) ( optional )_
 
-  It is required for nested routes. By default its value is taken as _null_ or _'/'_;
+It is required for nested routes. By default its value is taken as _null_ or _'/'_;
 
 **Auth.Screens** hoc should be wrapped inside **Auth** hoc.
 
@@ -201,7 +203,7 @@ export default withNavigation(App, {
 
   Object for handling navigation and provides all authenticated routes name and path.
 
-  - **routes** _( object )_ : Object with name key you defined in **publicPaths** ** and **privatePaths** in **withNavigation()\*\* and values are the object of name and path for a defined key.
+  - **routes** _( object )_ : Object with name key you defined in **publicPaths** and **privatePaths** in **withNavigation()** and values are the object of name and path for a defined key.
   - **navigate** _( string )_ : Function which takes either string or an object similar to _react-router-dom’s_ history.push() function.
   - **goBack** _( function )_ : Function which will navigate to the previous screen.
   - **goForward** _( function )_ : Function which will navigate to the next screen if history is available.
@@ -222,7 +224,7 @@ const { navigation, history, location, params } = useNavigation();
 
 ### useAuth()
 
-**useAuth()** is a hook which gives access to the config object and state object defined in **<Auth.Provider>** hoc directly. By default it returns an object with **isLoggedIn**, **userRole** and all the keys passed inside the state object.
+**useAuth()** is a hook which gives access to the config object and state object defined in **<Auth>** hoc directly. By default it returns an object with **isLoggedIn**, **userRole** and all the keys passed inside the state object.
 
 **Example**
 

@@ -16,7 +16,7 @@ const AuthScreens = (props: { path?: string }) => {
   const { publicPaths: PUBLIC_PATHS, privatePaths: PRIVATE_PATHS } =
     React.useContext(NavigationContext);
 
-  const hasPath = !!path;
+  const hasPath = !!path && path !== "/";
   let publicPaths = [];
   let privatePaths = [];
 
