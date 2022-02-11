@@ -6,10 +6,10 @@ import { getParsedPaths, reOrderPaths } from "../Utilities";
 
 /**
  * Higher Order Component to define private, public and protected routes for different user roles.
- * @publicPaths prop accepts an array with key, name, path, component, restricted, subPaths, nestedPaths and props.
- * @privatePaths prop accepts an array with key, name, path, component, subPaths, nestedPaths and props.
- * @userRoles prop an object with any number of user role key with its access end points path.
- * @routerType prop either "hash" or "browser"
+ * @prop { array } publicPaths - PublicPath array type
+ * @prop { array } privatePaths - PrivatePath array type
+ * @prop { object } userRoles - UserRole object type
+ * @prop { string } routerType - "hash" | "browser"
  */
 function Navigation(props: NavigationProviderParams) {
   const { children, privatePaths, publicPaths, userRoles, routerType } = props;
