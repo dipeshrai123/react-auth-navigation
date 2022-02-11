@@ -1,12 +1,12 @@
 import * as React from "react";
 import {
-  DefaultAuthConfigParams,
+  AuthConfig,
   NavigationConfigParams,
   PublicPathParams,
   PrivatePathParams,
 } from "./Types";
 
-export const DefaultAuthConfig: DefaultAuthConfigParams = {
+export const DefaultAuthConfig: AuthConfig = {
   isLoggedIn: false,
   userRole: "",
 };

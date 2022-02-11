@@ -2,10 +2,10 @@ import { useNavigation } from "./useNavigation";
 
 /**
  * Get query params for current url location
- * @param queryStr Query params string can be pass which overrides the current location query
+ * @param { string } queryStr Query params string can be pass which overrides the current location query
  * @returns Object with key value pair
  */
-export function useQuery(queryStr = null) {
+export function useQuery(queryStr: string | null = null) {
   const { location } = useNavigation();
   const queryParams = new URLSearchParams(queryStr ?? location.search);
 
