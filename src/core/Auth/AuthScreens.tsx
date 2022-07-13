@@ -71,12 +71,17 @@ const AuthScreens = (props: { path?: string }) => {
                 }
 
                 return (
-                  <PublicRoute
+                  <Route
                     key={index}
                     path={path}
-                    component={component}
-                    restricted={!!restricted}
-                    exact={_exact}
+                    element={
+                      <PublicRoute
+                        component={component}
+                        restricted={!!restricted}
+                        exact={_exact}
+                        path={path}
+                      />
+                    }
                   />
                 );
               }
@@ -96,11 +101,16 @@ const AuthScreens = (props: { path?: string }) => {
               }
 
               return (
-                <PrivateRoute
+                <Route
                   key={index}
                   path={path}
-                  component={component}
-                  exact={_exact}
+                  element={
+                    <PrivateRoute
+                      component={component}
+                      exact={_exact}
+                      path={path}
+                    />
+                  }
                 />
               );
             }

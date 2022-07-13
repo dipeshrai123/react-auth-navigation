@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Route, Navigate } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 
 import { AuthContext, NavigationContext } from '../Context';
 import { PrivatePathParams } from '../Types';
@@ -41,19 +41,12 @@ const PublicRoute = (props: {
   const canAccess =
     userRole && canUserAccess(parsedUserRolesAccessPaths, rest.path);
 
-  return (
-    <Route
-      {...rest}
-      element={
-        isLoggedIn && restricted ? (
-          <Navigate to={redirectToPath ?? '/'} replace />
-        ) : userRole && canAccess ? (
-          <Component />
-        ) : (
-          <Navigate to="/user-denied" replace />
-        )
-      }
-    />
+  return isLoggedIn && restricted ? (
+    <Navigate to={redirectToPath ?? '/'} replace />
+  ) : userRole && canAccess ? (
+    <Component />
+  ) : (
+    <Navigate to="/user-denied" replace />
   );
 };
 

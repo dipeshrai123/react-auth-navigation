@@ -20,9 +20,9 @@
   },
   "homepage": "https://github.com/dipeshrai123/react-auth-navigation#readme",
   "peerDependencies": {
-    "react": ">=16.13.1",
-    "react-dom": ">=16.13.1",
-    "react-router-dom": ">=5.2.0"
+    "react": ">=18.0.0",
+    "react-dom": ">=18.0.0",
+    "react-router-dom": ">=6.0.0"
   },
   "dependencies": {},
   "devDependencies": {

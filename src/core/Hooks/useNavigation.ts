@@ -1,20 +1,20 @@
-import { useContext } from "react";
+import { useContext } from 'react';
 import {
-  useHistory,
+  useNavigate,
   useLocation,
   useParams,
   matchPath,
-} from "react-router-dom";
-import { publicReturnType } from "../Types";
-import { AuthContext, NavigationContext } from "../Context";
-import { getParsedUserRole, canUserAccess, getParsedPaths } from "../Utilities";
+} from 'react-router-dom';
+import { publicReturnType } from '../Types';
+import { AuthContext, NavigationContext } from '../Context';
+import { getParsedUserRole, canUserAccess, getParsedPaths } from '../Utilities';
 
 /**
  * Hook for getting all navigation properties, methods and routes
  * @returns Object with navigation, history, location and params
  */
 export function useNavigation() {
-  const history = useHistory();
+  const navigate = useNavigate();
   const location = useLocation();
   const params = useParams();
 
@@ -26,7 +26,7 @@ export function useNavigation() {
   } = useContext(NavigationContext);
 
   // FOR FLATTING NESTED PATHS
-  const parser = getParsedPaths("nestedPaths");
+  const parser = getParsedPaths('nestedPaths');
   const parsedPublicPaths = parser(PUBLIC_PATHS);
   const parsedPrivatePaths = parser(PRIVATE_PATHS);
 
@@ -106,11 +106,10 @@ export function useNavigation() {
   return {
     navigation: {
       routes: combinedRoutes,
-      navigate: (path: string | object) => history.push(path),
-      goBack: () => history.goBack(),
-      goForward: () => history.goForward(),
+      navigate: (path: string | object) => navigate(path),
+      goBack: () => navigate(-1),
+      goForward: () => navigate(1),
     },
-    history,
     location,
     params,
   };
