@@ -41,6 +41,11 @@ const PublicRoute = (props: {
   const canAccess =
     userRole && canUserAccess(parsedUserRolesAccessPaths, rest.path);
 
+  console.log({
+    userRole,
+    canAccess,
+  });
+
   return isLoggedIn && restricted ? (
     <Navigate to={redirectToPath ?? '/'} replace />
   ) : userRole && canAccess ? (

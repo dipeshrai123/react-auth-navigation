@@ -10,9 +10,10 @@ export const canUserAccess = (userRoles: Array<string>, path: string) => {
   if (asteriskUserRoles.length > 0) {
     const canAccess = asteriskUserRoles
       .map((role) => {
+        console.log(matchPath(path, role), path, role);
         return {
           role,
-          access: !!matchPath(path, role),
+          access: role === '*' || !!matchPath(path, role),
         };
       })
       .filter((val) => val.access);
