@@ -1,9 +1,9 @@
-import * as React from "react";
-import { Route, Redirect } from "react-router-dom";
+import * as React from 'react';
+import { Route, Navigate } from 'react-router-dom';
 
-import { AuthContext, NavigationContext } from "../Context";
-import { PublicPathParams } from "../Types";
-import { getParsedUserRole, canUserAccess } from "../Utilities";
+import { AuthContext, NavigationContext } from '../Context';
+import { PublicPathParams } from '../Types';
+import { getParsedUserRole, canUserAccess } from '../Utilities';
 
 // Private Routes
 const PrivateRoute = (props: {
@@ -40,17 +40,17 @@ const PrivateRoute = (props: {
   return (
     <Route
       {...rest}
-      render={(props: object) => {
-        return isLoggedIn ? (
+      element={
+        isLoggedIn ? (
           userRole && canAccess ? (
-            <Component {...props} />
+            <Component />
           ) : (
-            <Redirect to={{ pathname: redirectToPath }} />
+            <Navigate to={redirectToPath ?? '/'} />
           )
         ) : (
-          <Redirect to={{ pathname: redirectToPath }} />
-        );
-      }}
+          <Navigate to={redirectToPath ?? '/'} />
+        )
+      }
     />
   );
 };

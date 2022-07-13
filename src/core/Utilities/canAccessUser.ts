@@ -1,4 +1,4 @@
-import { matchPath } from "react-router-dom";
+import { matchPath } from 'react-router-dom';
 
 // Support (*) feature for user roles access
 export const canUserAccess = (userRoles: Array<string>, path: string) => {
@@ -6,17 +6,13 @@ export const canUserAccess = (userRoles: Array<string>, path: string) => {
     return true;
   }
 
-  const asteriskUserRoles = userRoles.filter((val) => val.indexOf("*") >= 0);
+  const asteriskUserRoles = userRoles.filter((val) => val.indexOf('*') >= 0);
   if (asteriskUserRoles.length > 0) {
     const canAccess = asteriskUserRoles
       .map((role) => {
         return {
           role,
-          access: !!matchPath(path, {
-            path: role,
-            strict: true,
-            exact: true,
-          }),
+          access: !!matchPath(path, role),
         };
       })
       .filter((val) => val.access);

@@ -1,9 +1,9 @@
-import * as React from "react";
-import { Route, Redirect } from "react-router-dom";
+import * as React from 'react';
+import { Route, Navigate } from 'react-router-dom';
 
-import { AuthContext, NavigationContext } from "../Context";
-import { PrivatePathParams } from "../Types";
-import { getParsedUserRole, canUserAccess } from "../Utilities";
+import { AuthContext, NavigationContext } from '../Context';
+import { PrivatePathParams } from '../Types';
+import { getParsedUserRole, canUserAccess } from '../Utilities';
 
 // Public and Restricted Routes
 const PublicRoute = (props: {
@@ -44,15 +44,15 @@ const PublicRoute = (props: {
   return (
     <Route
       {...rest}
-      render={(props: any) => {
-        return isLoggedIn && restricted ? (
-          <Redirect to={{ pathname: redirectToPath }} />
+      element={
+        isLoggedIn && restricted ? (
+          <Navigate to={redirectToPath ?? '/'} replace />
         ) : userRole && canAccess ? (
-          <Component {...props} />
+          <Component />
         ) : (
-          <Redirect to="/user-denied" />
-        );
-      }}
+          <Navigate to="/user-denied" replace />
+        )
+      }
     />
   );
 };

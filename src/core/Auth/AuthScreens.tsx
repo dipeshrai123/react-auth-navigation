@@ -1,10 +1,10 @@
-import * as React from "react";
-import { Switch, Route } from "react-router-dom";
+import * as React from 'react';
+import { Routes, Route } from 'react-router-dom';
 
-import { PublicPathParams, PrivatePathParams } from "../Types";
-import { NavigationContext } from "../Context";
-import { getParsedPaths } from "../Utilities";
-import { PublicRoute, PrivateRoute } from "../Routes";
+import { PublicPathParams, PrivatePathParams } from '../Types';
+import { NavigationContext } from '../Context';
+import { getParsedPaths } from '../Utilities';
+import { PublicRoute, PrivateRoute } from '../Routes';
 
 /**
  * Higher Order Component which wraps overall component tree
@@ -16,12 +16,12 @@ const AuthScreens = (props: { path?: string }) => {
   const { publicPaths: PUBLIC_PATHS, privatePaths: PRIVATE_PATHS } =
     React.useContext(NavigationContext);
 
-  const hasPath = !!path && path !== "/";
+  const hasPath = !!path && path !== '/';
   let publicPaths = [];
   let privatePaths = [];
 
   if (hasPath) {
-    const parser = getParsedPaths("nestedPaths");
+    const parser = getParsedPaths('nestedPaths');
     const parsedPublicPaths = parser(PUBLIC_PATHS);
     const parsedPrivatePaths = parser(PRIVATE_PATHS);
 
@@ -48,7 +48,7 @@ const AuthScreens = (props: { path?: string }) => {
   }
 
   return (
-    <Switch>
+    <Routes>
       {
         // PUBLIC ROUTES
         publicPaths.length &&
@@ -115,12 +115,10 @@ const AuthScreens = (props: { path?: string }) => {
             .filter(({ path }: PublicPathParams) => path === null)
             .map(
               ({ component: Component }: PublicPathParams, index: number) =>
-                index === 0 && (
-                  <Route key={index} render={() => <Component />} />
-                )
+                index === 0 && <Route key={index} element={<Component />} />
             )
       }
-    </Switch>
+    </Routes>
   );
 };
 
