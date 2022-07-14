@@ -1,13 +1,12 @@
 import * as React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
-type Path = { name: string; path: string; component: React.ReactNode };
-type PublicPaths = (Path & { restricted?: boolean })[];
-type PrivatePaths = Path[];
+import { parseSubPaths } from './utils/getParsedPaths';
+import { PublicPath, PrivatePath } from './types';
 
 const NavigationContext = React.createContext<{
-  publicPaths: PublicPaths;
-  privatePaths: PrivatePaths;
+  publicPaths: PublicPath[];
+  privatePaths: PrivatePath[];
   userRoles: any;
 }>({
   publicPaths: [],
@@ -18,8 +17,8 @@ const NavigationContext = React.createContext<{
 export const withNavigation = (
   Component: React.ComponentType,
   config: {
-    publicPaths: PublicPaths;
-    privatePaths: PrivatePaths;
+    publicPaths: PublicPath[];
+    privatePaths: PrivatePath[];
     userRoles: any;
   }
 ) => {
@@ -34,8 +33,9 @@ export const withNavigation = (
 
 export const Screens = () => {
   const { publicPaths, privatePaths } = React.useContext(NavigationContext);
+  const paths = parseSubPaths([...publicPaths, ...privatePaths]);
 
-  const paths = [...publicPaths, ...privatePaths];
+  console.log('paths', paths);
   return (
     <BrowserRouter>
       <Routes>
