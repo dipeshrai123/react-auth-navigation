@@ -1,6 +1,6 @@
 import { PrivatePath, PublicPath } from '../types';
 
-export const getParsedPaths =
+const getParsedPaths =
   (pathType: 'subPaths' | 'nestedPaths') =>
   (paths: PublicPath[] | PrivatePath[]) => {
     const getNestedArray = (
@@ -24,7 +24,4 @@ export const getParsedPaths =
     return allPaths.flat();
   };
 
-export const parseSubPaths = (paths: PublicPath[] | PrivatePath[]) =>
-  getParsedPaths('subPaths')(paths).map(({ subPaths: _subPaths, ...rest }) => ({
-    ...rest,
-  }));
+export default getParsedPaths;
